@@ -1,0 +1,28 @@
+---
+- name: Configure network interfaces
+  nmcli:
+    type: ethernet
+    conn_name: "{{ item.value.conn_name }}"
+    ifname: "{{ item.value.ifname }}"
+    ip4: "{{ item.value.ip4 }}"
+    gw4: "{{ item.value.gw4 }}"
+    dns4: "{{ item.value.dns4 }}"
+    state: present
+  with_dict: "{{ gw_networks }}"
+  when: gw_networks is defined
+
+- name: Disable IPv6
+  sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Enable IPv4 forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+    sysctl_set: yes
+    state: present
+    reload: yes
