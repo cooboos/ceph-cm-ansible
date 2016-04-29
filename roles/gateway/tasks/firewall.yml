@@ -1,0 +1,44 @@
+---
+- name: Make sure iptables is disabled
+  service:
+    name: iptables
+    state: stopped
+    enabled: no
+  ignore_errors: yes
+
+- name: Make sure firewalld is enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: firewalld | Allow openvpn traffic
+  firewalld:
+    service: openvpn
+    zone: public
+    state: enabled
+    permanent: true
+    immediate: yes
+
+- name: firewalld | Add connection masquerading
+  command: firewall-cmd --zone=public --add-masquerade --permanent
+
+- name: firewalld | Add tun0 to internal zone
+  command: firewall-cmd --zone=internal --change-interface=tun0 --permanent
+
+## Coming in ansible 2.1
+#- name: firewalld | Add connection masquerading
+#  firewalld:
+#    masquerade: yes
+#    zone: public
+#    state: enabled
+#    permanent: true
+#    immediate: yes
+#
+#- name: firewalld | Add tun0 to internal zone
+#  firewalld:
+#    zone: internal
+#    interface: tun0
+#    state: enabled
+#    permanent: true
+#    immediate: yes
