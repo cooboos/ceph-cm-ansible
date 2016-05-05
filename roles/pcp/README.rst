@@ -53,6 +53,10 @@ connect to hosts that it monitors (in seconds)::
 
     pmcd_connect_timeout: 1
 
+To tell a ``pcp_manager`` host to retain full-resolution archives for a year::
+
+    pmlogmerge_retain: "365days"
+
 To tell a ``pcp_manager`` host to run PCP's various web UIs::
 
     pcp_web: true
